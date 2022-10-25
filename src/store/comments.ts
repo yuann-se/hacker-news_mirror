@@ -1,43 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
-export interface IResponse {
-    data: {
-        id: string;
-        body: string;
-        author: string;
-        created: string;
-        replies: {
-            data: {
-                children: IResponse[]
-            }
-        }
-    }
-}
+import { IItem } from "hacker-news-api-types";
 
 interface IInitState {
     commentsData: {
-        [id: string]: IResponse[]
+        [id: number]: IItem[]
     }
-    loading: boolean;
-    fetchError: string;
+    loading: boolean
+    fetchError: string
+    count: number
 }
 
 const initialState: IInitState = {
     commentsData: {},
     loading: false,
-    fetchError: ''
+    fetchError: '',
+    count: 0
 }
 
-export const saveComments = createAsyncThunk('SAVE_POST_COMMENTS',
-    async (postID: string) => {
-        const res = await axios.get(
-            `https://api.reddit.com/comments/${postID}?sort=top`,
-        );
-        const initRes = res.data[1].data.children;
-        // const comments = getRequiredData(initRes);
-        return { postID, comments }
+// Подгружаем kids одного элемента (новости или комментария)
+export const saveComments = createAsyncThunk('SAVE_COMMENTS',
+    async (item: IItem) => {
+        const comments = await Promise.all(item.kids!.map(async (id) => {
+            const res = await axios.get(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)
+            const comment: IItem = res.data
+            return comment
+        }))
+        return { item, comments }
     })
+
 
 export const comments = createSlice({
     name: 'comments',
@@ -50,7 +41,7 @@ export const comments = createSlice({
                 state.fetchError = '';
             })
             .addCase(saveComments.fulfilled, (state, action) => {
-                // state.commentsData[action.payload.postID] = action.payload.comments;
+                state.commentsData[action.payload.item.id] = action.payload.comments;
                 state.loading = false;
                 state.fetchError = '';
             })

@@ -2,14 +2,26 @@ import './index.css';
 import { Layout } from 'antd';
 import { Header } from './components/Header';
 import { NewsList } from './components/NewsList';
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
-function App() {
+export const App = () => {
+
   return (
-    <Layout>
-      <Header />
-      <NewsList />
-    </Layout>
+    <BrowserRouter>
+      <Switch>
+
+        <Route path="/news">
+          <Layout>
+            <Header />
+            <NewsList />
+          </Layout>
+        </Route>
+
+        <Route path="/">
+          <Redirect to={'/news'} />
+        </Route>
+
+      </Switch>
+    </BrowserRouter>
   );
 }
-
-export default App;
