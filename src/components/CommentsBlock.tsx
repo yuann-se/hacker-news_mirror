@@ -1,5 +1,5 @@
 import { useComments } from "../hooks/useComments"
-import { Comment, Divider, Empty, Skeleton } from 'antd'
+import { Comment, Divider, Empty } from 'antd'
 import { Fragment, useEffect, useState } from "react"
 import { timeSince } from "../utils/timeSince"
 import { IItem } from "hacker-news-api-types"
@@ -12,7 +12,7 @@ interface IProps {
 
 export const CommentsBlock = ({ story, isRoot, onLoad }: IProps) => {
 
-    const { commentsData, loading } = useComments({ story, isRoot })
+    const { commentsData } = useComments({ story, isRoot })
 
     interface IIsOpen {
         [id: number]: boolean
@@ -54,8 +54,6 @@ export const CommentsBlock = ({ story, isRoot, onLoad }: IProps) => {
                                     <Divider className="comment-divider" orientation="left" plain>{isOpen[item.id] ? 'Hide' : 'Show more'}</Divider>
                                 </div>
                             )}
-
-                            <Skeleton loading={loading} active avatar paragraph={{ rows: 2 }}></Skeleton>
 
                         </Fragment>
                         )

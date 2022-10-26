@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Skeleton, Space, Typography } from "antd"
+import { Button, Divider, Empty, Modal, Skeleton, Space, Typography } from "antd"
 import { useHistory, useLocation } from "react-router-dom"
 import queryString from 'query-string'
 import { UserOutlined, ClockCircleOutlined, StockOutlined, LinkOutlined, CommentOutlined, SyncOutlined, HomeOutlined } from "@ant-design/icons"
@@ -30,10 +30,20 @@ export const NewsDetails = () => {
             footer={null}
             keyboard={true}
             onCancel={() => history.push('/news')}
-            width={1120}
+            width={1100}
             className='modal'
         >
-            <Skeleton active loading={loading || storyLoading}></Skeleton>
+            <Skeleton active loading={(loading || storyLoading) && !!storyID}></Skeleton>
+
+            {(!storyID || !story) && !loading && (
+                <Empty
+                    image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                    imageStyle={{ height: 150, }}
+                    description={<span>This page does not exist</span>}
+                >
+                    <Button onClick={() => history.push('/news')} icon={<HomeOutlined />}>Home</Button>
+                </Empty>
+            )}
 
             {!loading && !storyLoading && story && (
                 <Space direction="vertical" style={{ width: '100%' }}>
