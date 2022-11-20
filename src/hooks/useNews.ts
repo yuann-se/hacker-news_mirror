@@ -1,18 +1,18 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "../store";
-import { saveNews } from "../store/news";
+import { saveNewsIds } from "../store/idsList";
 
 export const useNews = () => {
-    const data = useSelector((state: RootState) => state.news);
-    const dispatch = useDispatch<AppDispatch>()
+  const data = useSelector((state: RootState) => state.news)
+  const idsList = useSelector((state: RootState) => state.idsList.idsList)
+  const dispatch = useDispatch<AppDispatch>()
 
-    useEffect(() => {
-        if (!data.data || !data.data.length)
-            dispatch(saveNews())
-        // eslint-disable-next-line
-    }, [])
+  useEffect(() => {
+    if (!idsList.length) dispatch(saveNewsIds())
+    // eslint-disable-next-line
+  }, [idsList.length])
 
-    return data
+  return data
 }
 
